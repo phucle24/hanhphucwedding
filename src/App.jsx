@@ -5,6 +5,7 @@ import WeddingTimeline from './components/WeddingTimeline'
 import OurStory from './components/OurStory'
 import Gallery from './components/Gallery'
 import WishesSection from './components/WishesSection'
+import ThankYouFooter from './components/ThankYouFooter'
 import FloatingPetals from './components/FloatingPetals'
 import MusicPlayer from './components/MusicPlayer'
 import { useAutoScroll } from './hooks/useAutoScroll'
@@ -31,6 +32,7 @@ export default function App() {
         <OurStory />
         <Gallery />
         <WishesSection />
+        <ThankYouFooter />
       </main>
       <MusicPlayer />
     </>

@@ -2,74 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #fdf8f0;
+    color: #4a3728;
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+  }
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+@layer components {
+  .section-title {
+    @apply font-serif text-3xl md:text-4xl text-gold-600 text-center mb-2;
+  }
+  .section-subtitle {
+    @apply font-script text-xl text-blush-500 text-center mb-8;
+  }
+  .divider-ornament {
+    @apply flex items-center justify-center gap-3 my-4;
+  }
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Petal styles */
+.petal {
+  position: fixed;
+  top: -20px;
+  width: 12px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.85;
 }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #fdf8f0; }
+::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 3px; }
 
 /* Gold shimmer text */
-@keyframes gold-shimmer {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-.animate-gold-shimmer {
-  background: linear-gradient(
-    90deg,
-    #b8860b 0%,
-    #ffd700 25%,
-    #ffec8b 50%,
-    #ffd700 75%,
-    #b8860b 100%
-  );
+.text-gold-shimmer {
+  background: linear-gradient(90deg, #b8960c, #d4af37, #f0d080, #d4af37, #b8960c);
   background-size: 200% auto;
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
-  color: transparent;
-  animation: gold-shimmer 3s linear infinite;
+  animation: shimmer 3s linear infinite;
 }
 
-/* Elegant reveal animation */
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
-.animate-reveal-up {
-  animation: reveal-up 0.6s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+/* Section fade in */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Float animation for petals */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-15px) rotate(5deg);
-  }
+/* Heart pulse */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.15); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.15); }
+  70%       { transform: scale(1); }
 }
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+.heart-pulse {
+  animation: heartbeat 1.5s ease-in-out infinite;
+  display: inline-block;
 }

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { Music, Music2 } from 'lucide-react'
 
 export default function MusicPlayer() {
   const [playing, setPlaying] = useState(false)
@@ -39,23 +40,11 @@ export default function MusicPlayer() {
         className="fixed top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/90 backdrop-blur-sm shadow-lg flex items-center justify-center transition-all duration-300 border border-pink-200 hover:shadow-xl active:scale-95"
       >
         <div className={`transition-all duration-500 ${playing ? 'animate-spin' : ''}`} style={{ animationDuration: '3s' }}>
-          <svg 
-            width="22" 
-            height="22" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-            className={playing ? 'text-pink-500' : 'text-pink-400'}
-          >
-            <path d="M9 18V5l12-2v13" />
-            <circle cx="6" cy="18" r="3" />
-            <circle cx="18" cy="16" r="3" />
-          </svg>
+          {playing
+            ? <Music2 size={20} className="text-pink-500" />
+            : <Music size={20} className="text-pink-400" />
+          }
         </div>
-        
         {playing && (
           <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5">
             <span className="w-0.5 h-2 bg-pink-400 rounded-full animate-pulse" style={{ animationDelay: '0ms' }} />

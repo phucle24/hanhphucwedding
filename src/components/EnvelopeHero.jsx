@@ -22,15 +22,12 @@ import { config } from '../weddingConfig'
  *  20  wax seal (envelope.webp)
  *  25  top flap (closed) / invisible when opened (backfaceVisibility: hidden)
  */
-const W = 320
-const envH = 215        // total envelope height
-const openH = 105       // opening depth (photo visible here when inside)
-const bodyH = envH - openH  // 110px – solid face covers photo bottom
-const peek = 85         // px photo sticks above envelope top
-const comboH = peek + envH  // 300
-const photoW = 280
-const photoH = 190
-const flapH = 118       // top flap height (slightly deeper than opening for coverage)
+const W = 340          // wider envelope
+const envH = 220        // taller envelope
+const photoW = 300      // wider photo
+const photoH = 320      // taller photo - half inside, half outside
+const photoPeek = 160   // 160px outside, 160px inside when opened
+const comboH = photoPeek + envH  // total container height
 
 function FlyingHearts({ isActive }) {
   const hearts = Array.from({ length: 14 }, (_, i) => ({
@@ -81,49 +78,60 @@ export default function EnvelopeHero() {
   return (
     <section
       id="home"
-      className="relative flex flex-col items-center justify-center py-6 px-4 overflow-hidden"
+      className="relative flex flex-col items-center justify-center py-3 px-4 overflow-hidden"
       style={{ backgroundColor: '#fdf6f3' }}
     >
-      {/* Header */}
+      {/* Header text */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="text-center mb-2"
       >
-        <p className="text-[10px] tracking-[0.35em] text-[#8b4545] uppercase mb-1">
-          Wedding Invitation
+        <p className="text-[10px] tracking-[0.4em] text-[#8b4545] uppercase mb-1">
+          WEDDING INVITATION
         </p>
-        <h1 className="text-[18px] md:text-2xl tracking-[0.15em] text-[#6b2d2d] font-semibold">
+        <h1 className="text-xl tracking-[0.2em] text-[#6b2d2d] font-medium">
           THIỆP MỜI CƯỚI
         </h1>
       </motion.div>
 
-      {/* Names row */}
+      {/* Names positioned on left and right above envelope */}
       <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.15 }}
-        className="flex items-center justify-between mb-1"
-        style={{ width: W }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="relative mb-0"
+        style={{ width: W, height: 40 }}
       >
-        <span className="font-script text-2xl text-gray-800 ml-3">{config.brideName}</span>
-        <span className="text-[#8b4545] text-xl font-light px-2">&amp;</span>
-        <span className="font-script text-2xl text-gray-800 mr-3">{config.groomName}</span>
+        {/* Bride name - left */}
+        <span 
+          className="absolute left-0 top-0 text-3xl text-gray-800"
+          style={{ fontFamily: "'Great Vibes', cursive" }}
+        >
+          {config.brideName}
+        </span>
+        {/* Groom name - right */}
+        <span 
+          className="absolute right-0 top-0 text-3xl text-gray-800"
+          style={{ fontFamily: "'Great Vibes', cursive" }}
+        >
+          {config.groomName}
+        </span>
       </motion.div>
 
       {/* ═══ ENVELOPE + PHOTO COMBO ═══ */}
       <motion.div
-        className="relative flex-1"
+        className="relative"
         style={{ width: W, height: comboH, cursor: isOpen ? 'default' : 'pointer', perspective: 800 }}
         onClick={!isOpen ? handleOpen : undefined}
         animate={isOpen
-          ? { scale: 1.15, y: -10 }
-          : { scale: [1, 1.02, 1], y: [0, -4, 0] }
+          ? { scale: 1.05, y: [-5, 5, -5, 5, 0] }
+          : { scale: [1, 1.02, 1, 1.01, 1], y: [0, -4, 0, -2, 0] }
         }
         transition={isOpen
-          ? { duration: 0.6, ease: 'easeOut' }
-          : { duration: 2, repeat: Infinity, ease: 'easeInOut' }
+          ? { duration: 0.8, ease: 'easeOut' }
+          : { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
         }
       >
         <FlyingHearts isActive={showHearts} />
@@ -134,22 +142,22 @@ export default function EnvelopeHero() {
           style={{
             height: envH,
             zIndex: 2,
-            background: 'linear-gradient(170deg, #7a2020 0%, #5a1818 100%)',
-            boxShadow: '0 14px 45px rgba(80,15,15,0.4)',
+            background: 'linear-gradient(180deg, #a03535 0%, #8b2323 100%)',
+            boxShadow: '0 10px 40px rgba(139,35,35,0.3)',
           }}
         />
 
-        {/* z=10 — Wedding photo: starts hidden inside, slides up on open */}
+        {/* z=10 — Wedding photo: hidden when closed, slides up when opened */}
         <motion.div
           initial={false}
           animate={showPhoto
-            ? { y: -20, opacity: 1, scale: 1.12 }
-            : { y: envH + 10, opacity: 0, scale: 0.9 }
+            ? { y: -photoPeek, opacity: 1, scale: 1 }
+            : { y: 0, opacity: 0, scale: 0.95 }
           }
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute overflow-hidden rounded-xl shadow-2xl"
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute overflow-hidden rounded-lg shadow-2xl"
           style={{
-            top: 0,
+            top: photoPeek,
             left: (W - photoW) / 2,
             width: photoW,
             height: photoH,
@@ -161,86 +169,77 @@ export default function EnvelopeHero() {
             alt="Ảnh cưới"
             className="w-full h-full object-cover object-top"
           />
-          <div className="absolute inset-2 border border-white/25 rounded-lg pointer-events-none" />
         </motion.div>
 
-        {/* z=15 — Envelope BODY FRONT: only the lower bodyH portion
-            This is what makes the photo look "inside" the envelope —
-            the solid face covers the bottom of the photo.          */}
-        <div
-          className="absolute left-0 right-0 bottom-0 pointer-events-none rounded-b-lg"
-          style={{ height: bodyH, zIndex: 15 }}
+        {/* z=15 — Envelope BODY with triangular side flaps */}
+        <motion.div
+          className="absolute left-0 right-0 bottom-0 pointer-events-none"
+          style={{ height: envH, zIndex: 15 }}
+          animate={isOpen ? { y: envH * 0.4, opacity: 0.3 } : { y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
         >
-          <div className="absolute inset-0 rounded-b-lg" style={{ background: '#922e2e' }} />
-          {/* Left fold shadow */}
+          {/* Base color */}
+          <div className="absolute inset-0 rounded-lg" style={{ background: '#b94444' }} />
+          
+          {/* Left triangular flap */}
           <div
-            className="absolute inset-0"
+            className="absolute left-0 top-0"
             style={{
-              background: 'linear-gradient(135deg, #bc4848 0%, #8a2525 100%)',
-              clipPath: 'polygon(0 0, 50% 50%, 0 100%)',
+              width: '50%',
+              height: '100%',
+              background: 'linear-gradient(135deg, #c95454 0%, #a03535 100%)',
+              clipPath: 'polygon(0 0, 100% 50%, 0 100%)',
             }}
           />
-          {/* Right fold shadow */}
+          
+          {/* Right triangular flap */}
           <div
-            className="absolute inset-0"
+            className="absolute right-0 top-0"
             style={{
-              background: 'linear-gradient(-135deg, #bc4848 0%, #8a2525 100%)',
-              clipPath: 'polygon(100% 0, 50% 50%, 100% 100%)',
+              width: '50%',
+              height: '100%',
+              background: 'linear-gradient(-135deg, #c95454 0%, #a03535 100%)',
+              clipPath: 'polygon(100% 0, 0 50%, 100% 100%)',
             }}
           />
-          {/* Bottom triangle fold */}
+          
+          {/* Bottom triangular flap */}
           <div
             className="absolute bottom-0 left-0 right-0"
             style={{
-              height: '70%',
-              background: 'linear-gradient(to top, #9e3232 0%, #7a2222 100%)',
+              height: '60%',
+              background: 'linear-gradient(to top, #9a3030 0%, #b94444 100%)',
               clipPath: 'polygon(0 100%, 50% 0, 100% 100%)',
             }}
           />
-        </div>
+        </motion.div>
 
-        {/* z=20 — Wax seal (envelope.webp) */}
+        {/* z=20 — Wax seal positioned at center of envelope body */}
         <motion.div
           className="absolute pointer-events-none"
           style={{
-            bottom: Math.round(bodyH * 0.35),
+            bottom: envH * 0.35,
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 20,
           }}
-          animate={isOpen ? { scale: 0.8, opacity: 0.5 } : { scale: 1, opacity: 1 }}
+          animate={isOpen ? { scale: 0.85, opacity: 0.6 } : { scale: 1, opacity: 1 }}
           transition={{ duration: 0.4 }}
         >
           <img
             src="/envelope.webp"
             alt="seal"
-            className="w-12 h-12 drop-shadow-xl"
+            className="w-12 h-12 drop-shadow-lg"
           />
         </motion.div>
 
-        {/* z=25 — Top flap (closed) / disappears when opened via backfaceVisibility */}
-        <motion.div
-          className="absolute left-0 right-0 pointer-events-none"
-          style={{
-            top: peek,
-            height: flapH,
-            zIndex: 25,
-            transformOrigin: 'top center',
-            transformStyle: 'preserve-3d',
-            backfaceVisibility: 'hidden',
-            background: 'linear-gradient(175deg, #c85050 0%, #a03030 55%, #7a2424 100%)',
-            clipPath: 'polygon(0 0, 50% 100%, 100% 0)',
-          }}
-          animate={isOpen ? { rotateX: -180 } : { rotateX: 0 }}
-          transition={{ duration: 0.8, ease: 'easeInOut' }}
-        />
 
         {/* Drop shadow */}
         <div
-          className="absolute rounded-full blur-xl pointer-events-none"
+          className="absolute rounded-full blur-lg pointer-events-none"
           style={{
-            bottom: -8, left: '10%', right: '10%', height: 12,
-            background: 'rgba(0,0,0,0.2)', zIndex: 1,
+            bottom: -10, left: '5%', right: '5%', height: 15,
+            background: 'rgba(0,0,0,0.15)', zIndex: 1,
           }}
         />
       </motion.div>
@@ -254,7 +253,7 @@ export default function EnvelopeHero() {
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.4, delay: 0.6 }}
             onClick={handleOpen}
-            className="mt-5 px-7 py-2.5 rounded-full border border-[#d4a0a0] bg-white/75 backdrop-blur-sm shadow-md active:scale-95 transition-transform select-none"
+            className="mt-3 px-7 py-2.5 rounded-full border border-[#d4a0a0] bg-white/75 backdrop-blur-sm shadow-md active:scale-95 transition-transform select-none"
           >
             <span className="font-script text-[#8b4545] text-base tracking-wide">
               Chạm để mở thiệp

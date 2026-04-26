@@ -1,18 +1,24 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 
 export function useAutoScroll() {
   const scrollIntervalRef = useRef(null)
   const isScrollingRef = useRef(false)
+  const isPausedRef = useRef(false)
 
   const startAutoScroll = useCallback(() => {
-    if (isScrollingRef.current) return
+    if (isScrollingRef.current || isPausedRef.current) return
     isScrollingRef.current = true
     
     let lastTime = performance.now()
-    const speed = 0.5 // pixels per millisecond - slow and smooth
+    const speed = 0.1 // pixels per millisecond - very slow and smooth
     
     const scrollStep = (currentTime) => {
       if (!isScrollingRef.current) return
+      if (isPausedRef.current) {
+        lastTime = currentTime
+        scrollIntervalRef.current = requestAnimationFrame(scrollStep)
+        return
+      }
       
       const deltaTime = currentTime - lastTime
       lastTime = currentTime
@@ -22,7 +28,6 @@ export function useAutoScroll() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
       
       if (currentScroll >= maxScroll) {
-        // Reached bottom, stop scrolling
         isScrollingRef.current = false
         return
       }
@@ -36,11 +41,41 @@ export function useAutoScroll() {
 
   const stopAutoScroll = useCallback(() => {
     isScrollingRef.current = false
+    isPausedRef.current = false
     if (scrollIntervalRef.current) {
       cancelAnimationFrame(scrollIntervalRef.current)
       scrollIntervalRef.current = null
     }
   }, [])
 
-  return { startAutoScroll, stopAutoScroll }
+  const pauseAutoScroll = useCallback(() => {
+    isPausedRef.current = true
+  }, [])
+
+  const resumeAutoScroll = useCallback(() => {
+    isPausedRef.current = false
+  }, [])
+
+  // Auto-pause on click
+  useEffect(() => {
+    const handleClick = () => {
+      if (isScrollingRef.current) {
+        isPausedRef.current = true
+        // Resume after 3 seconds
+        setTimeout(() => {
+          isPausedRef.current = false
+        }, 3000)
+      }
+    }
+
+    window.addEventListener('click', handleClick)
+    window.addEventListener('touchstart', handleClick)
+    
+    return () => {
+      window.removeEventListener('click', handleClick)
+      window.removeEventListener('touchstart', handleClick)
+    }
+  }, [])
+
+  return { startAutoScroll, stopAutoScroll, pauseAutoScroll, resumeAutoScroll }
 }
