@@ -1,6 +1,18 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
+const easeSmooth = [0.22, 1, 0.36, 1]
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 50, scale: 0.97 },
+  animate: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { duration: 1, ease: easeSmooth }
+  }
+}
+
 const HouseIcon = () => (
   <svg viewBox="0 0 48 48" className="w-8 h-8" fill="none">
     <path d="M24 4L4 18h4v22h12V28h8v12h12V18h4L24 4z" fill="#f5e6d3" stroke="#c9956a" strokeWidth="1.5" strokeLinejoin="round"/>
@@ -30,10 +42,10 @@ function HouseBadge({ label, mapLink }) {
 function TimelineEvent({ title, time, day, month, year, lunarDate, location, delay }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8, delay }}
+      initial={{ opacity: 0, y: 45, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 1.1, delay, ease: easeSmooth }}
       className="text-center py-4"
     >
       {/* Title */}

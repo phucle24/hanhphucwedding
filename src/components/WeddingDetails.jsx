@@ -1,15 +1,38 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
+const easeSmooth = [0.22, 1, 0.36, 1] // Smooth cubic bezier
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 40 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.9, ease: easeSmooth }
+}
+
+const staggerContainer = {
+  animate: { transition: { staggerChildren: 0.1 } }
+}
+
+const cardReveal = {
+  initial: { opacity: 0, y: 50, scale: 0.96 },
+  animate: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { duration: 1, ease: easeSmooth }
+  }
+}
+
 export default function WeddingDetails() {
   return (
     <section className="py-8 px-4 bg-white">
       <div className="max-w-md mx-auto">
         {/* Section Title */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          variants={fadeInUp}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, margin: "-50px" }}
           className="text-center mb-6"
         >
           <h2 className="text-xl font-serif font-semibold text-gray-800 tracking-wide">
@@ -20,9 +43,10 @@ export default function WeddingDetails() {
         <div className="space-y-4">
           {/* TIỆC CƯỚI NHÀ TRAI */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            variants={cardReveal}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-80px" }}
             className="relative bg-gradient-to-br from-[#6b1a1a] to-[#8b2323] rounded-3xl p-5 text-white text-center shadow-xl overflow-hidden"
           >
             {/* Heart icon on left */}
@@ -50,10 +74,11 @@ export default function WeddingDetails() {
 
           {/* TIỆC CƯỚI NHÀ GÁI */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
+            variants={cardReveal}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ delay: 0.15 }}
             className="relative bg-gradient-to-br from-[#6b1a1a] to-[#8b2323] rounded-3xl p-5 text-white text-center shadow-xl overflow-hidden"
           >
             {/* Heart icon on right */}

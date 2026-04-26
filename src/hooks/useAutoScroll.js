@@ -1,38 +1,34 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef, useEffect, useState } from 'react'
 
 export function useAutoScroll() {
   const scrollIntervalRef = useRef(null)
   const isScrollingRef = useRef(false)
-  const isPausedRef = useRef(false)
+  const userInteractedRef = useRef(false)
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false)
 
   const startAutoScroll = useCallback(() => {
-    if (isScrollingRef.current || isPausedRef.current) return
+    // Don't start if user has already manually scrolled
+    if (isScrollingRef.current || userInteractedRef.current) return
+    
     isScrollingRef.current = true
+    setIsAutoScrolling(true)
     
-    let lastTime = performance.now()
-    const speed = 0.1 // pixels per millisecond - very slow and smooth
+    let scrollY = window.scrollY
+    const speed = 0.8 // pixels per frame - smooth for mobile
     
-    const scrollStep = (currentTime) => {
-      if (!isScrollingRef.current) return
-      if (isPausedRef.current) {
-        lastTime = currentTime
-        scrollIntervalRef.current = requestAnimationFrame(scrollStep)
-        return
-      }
+    const scrollStep = () => {
+      if (!isScrollingRef.current || userInteractedRef.current) return
       
-      const deltaTime = currentTime - lastTime
-      lastTime = currentTime
-      
-      const scrollAmount = speed * deltaTime
-      const currentScroll = window.scrollY
+      scrollY += speed
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight
       
-      if (currentScroll >= maxScroll) {
+      if (scrollY >= maxScroll) {
         isScrollingRef.current = false
+        setIsAutoScrolling(false)
         return
       }
       
-      window.scrollTo(0, currentScroll + scrollAmount)
+      window.scrollTo(0, scrollY)
       scrollIntervalRef.current = requestAnimationFrame(scrollStep)
     }
     
@@ -41,41 +37,47 @@ export function useAutoScroll() {
 
   const stopAutoScroll = useCallback(() => {
     isScrollingRef.current = false
-    isPausedRef.current = false
+    setIsAutoScrolling(false)
+    userInteractedRef.current = true // Mark that user took control
     if (scrollIntervalRef.current) {
       cancelAnimationFrame(scrollIntervalRef.current)
       scrollIntervalRef.current = null
     }
   }, [])
 
-  const pauseAutoScroll = useCallback(() => {
-    isPausedRef.current = true
-  }, [])
-
-  const resumeAutoScroll = useCallback(() => {
-    isPausedRef.current = false
-  }, [])
-
-  // Auto-pause on click
+  // Detect user manual scroll/touch - stop auto-scroll permanently
   useEffect(() => {
-    const handleClick = () => {
+    const handleUserScroll = () => {
       if (isScrollingRef.current) {
-        isPausedRef.current = true
-        // Resume after 3 seconds
-        setTimeout(() => {
-          isPausedRef.current = false
-        }, 3000)
+        // User is manually scrolling, stop auto-scroll
+        stopAutoScroll()
       }
     }
 
-    window.addEventListener('click', handleClick)
-    window.addEventListener('touchstart', handleClick)
+    // Desktop: wheel event
+    window.addEventListener('wheel', handleUserScroll, { passive: true })
+    
+    // Mobile: touch move (scrolling)
+    window.addEventListener('touchmove', handleUserScroll, { passive: true })
+    
+    // Click also stops auto-scroll
+    window.addEventListener('click', handleUserScroll, { passive: true })
     
     return () => {
-      window.removeEventListener('click', handleClick)
-      window.removeEventListener('touchstart', handleClick)
+      window.removeEventListener('wheel', handleUserScroll)
+      window.removeEventListener('touchmove', handleUserScroll)
+      window.removeEventListener('click', handleUserScroll)
+    }
+  }, [stopAutoScroll])
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      if (scrollIntervalRef.current) {
+        cancelAnimationFrame(scrollIntervalRef.current)
+      }
     }
   }, [])
 
-  return { startAutoScroll, stopAutoScroll, pauseAutoScroll, resumeAutoScroll }
+  return { startAutoScroll, stopAutoScroll, isAutoScrolling }
 }

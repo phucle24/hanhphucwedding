@@ -175,7 +175,7 @@ export default function WishesSection() {
             initial={{ y: '100%' }}
             animate={{ y: '-100%' }}
             transition={{
-              duration: 30,
+              duration: 60,
               repeat: Infinity,
               ease: 'linear',
             }}

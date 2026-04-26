@@ -88,9 +88,6 @@ export default function EnvelopeHero() {
         transition={{ duration: 0.5 }}
         className="text-center mb-2"
       >
-        <p className="text-[10px] tracking-[0.4em] text-[#8b4545] uppercase mb-1">
-          WEDDING INVITATION
-        </p>
         <h1 className="text-xl tracking-[0.2em] text-[#6b2d2d] font-medium">
           THIỆP MỜI CƯỚI
         </h1>
@@ -101,8 +98,8 @@ export default function EnvelopeHero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="relative mb-0"
-        style={{ width: W, height: 40 }}
+        className="relative"
+        style={{ width: W, height: 35, marginBottom: isOpen ? 20 : -10 }}
       >
         {/* Bride name - left */}
         <span 
@@ -123,7 +120,13 @@ export default function EnvelopeHero() {
       {/* ═══ ENVELOPE + PHOTO COMBO ═══ */}
       <motion.div
         className="relative"
-        style={{ width: W, height: comboH, cursor: isOpen ? 'default' : 'pointer', perspective: 800 }}
+        style={{ 
+          width: W, 
+          height: isOpen ? comboH : envH, 
+          cursor: isOpen ? 'default' : 'pointer', 
+          perspective: 800,
+          marginTop: isOpen ? 0 : -30
+        }}
         onClick={!isOpen ? handleOpen : undefined}
         animate={isOpen
           ? { scale: 1.05, y: [-5, 5, -5, 5, 0] }

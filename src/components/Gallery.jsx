@@ -38,7 +38,6 @@ export default function Gallery() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl font-serif text-gray-800 mb-2">Album Ảnh</h2>
-          <p className="text-gray-600">Gallery</p>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
