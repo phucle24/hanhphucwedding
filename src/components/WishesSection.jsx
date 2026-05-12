@@ -33,7 +33,7 @@ function WishBubble({ wish, delay }) {
   )
 }
 
-function WishModal({ isOpen, onClose, onSubmit }) {
+function WishModal({ isOpen, onClose, onSubmit, isLoading }) {
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
 
@@ -112,9 +112,10 @@ function WishModal({ isOpen, onClose, onSubmit }) {
 
                 <button
                   type="submit"
-                  className="w-full bg-[#ef5364] hover:bg-[#e84556] text-white font-semibold py-3 rounded-full transition-colors duration-200 shadow-lg"
+                  disabled={isLoading}
+                  className="w-full bg-[#ef5364] hover:bg-[#e84556] disabled:opacity-60 text-white font-semibold py-3 rounded-full transition-colors duration-200 shadow-lg"
                 >
-                  Gửi Lời Chúc
+                  {isLoading ? 'Đang gửi...' : 'Gửi Lời Chúc'}
                 </button>
               </form>
             </div>
@@ -125,34 +126,50 @@ function WishModal({ isOpen, onClose, onSubmit }) {
   )
 }
 
+const EMOJI_LIST = ['💝', '💐', '🎊', '🕊️', '🎁', '💖', '🌸', '✨']
+
 export default function WishesSection() {
   const [wishes, setWishes] = useState(INITIAL_WISHES)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showToast, setShowToast] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSubmit = (name, message) => {
-    const newWish = {
-      id: Date.now(),
-      name,
-      message,
-      emoji: '💝',
-      position: {
-        top: `${Math.random() * 70 + 10}%`,
-        left: `${Math.random() * 60 + 5}%`,
-      }
-    }
-    setWishes(prev => [...prev, newWish])
-    setShowToast(true)
-    setTimeout(() => setShowToast(false), 3000)
-  }
-
-  // Add floating animation effect
+  // Fetch wishes from backend
   useEffect(() => {
-    const interval = setInterval(() => {
-      setWishes(prev => [...prev])
-    }, 50)
-    return () => clearInterval(interval)
+    fetch('/api/wishes')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          setWishes(data)
+        }
+      })
+      .catch(() => {
+        // fallback to initial if API not available
+      })
   }, [])
+
+  const handleSubmit = async (name, message) => {
+    const emoji = EMOJI_LIST[Math.floor(Math.random() * EMOJI_LIST.length)]
+    setIsLoading(true)
+    try {
+      const res = await fetch('/api/wishes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, message, emoji }),
+      })
+      if (res.ok) {
+        const newWish = await res.json()
+        setWishes(prev => [...prev, newWish])
+      }
+    } catch {
+      // Fallback: add locally if API unavailable
+      setWishes(prev => [...prev, { id: Date.now(), name, message, emoji }])
+    } finally {
+      setIsLoading(false)
+      setShowToast(true)
+      setTimeout(() => setShowToast(false), 3000)
+    }
+  }
 
   return (
     <section id="wishes" className="relative py-12 px-4 bg-gradient-to-b from-white to-pink-50 overflow-hidden">
@@ -196,8 +213,8 @@ export default function WishesSection() {
           </motion.div>
         </div>
 
-        {/* Floating input button at bottom */}
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
+        {/* Floating input button at bottom left */}
+        <div className="fixed bottom-6 left-4 z-40">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -214,6 +231,7 @@ export default function WishesSection() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleSubmit}
+          isLoading={isLoading}
         />
 
         {/* Success Toast */}

@@ -20,7 +20,7 @@ export const config = {
   },
 
   // --- Wedding Date (ISO format) ---
-  weddingDate: '2025-12-20T10:00:00',   // YYYY-MM-DDTHH:MM:SS
+  weddingDate: '2026-08-02T10:00:00',   // YYYY-MM-DDTHH:MM:SS
 
   // --- Ceremony (Nhà Trai - Groom's House) ---
   ceremony: {

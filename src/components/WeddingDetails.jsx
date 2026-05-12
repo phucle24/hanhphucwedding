@@ -56,7 +56,7 @@ export default function WeddingDetails() {
             <p className="text-sm text-white/90 tracking-wide mb-2">CHỦ NHẬT - 09:30</p>
             
             <div className="text-[#d4af37] text-3xl font-bold tracking-wider mb-2">
-              20 . 12 . 2026
+              02 . 08 . 2026
             </div>
             
             <p className="text-xs text-white/80 mb-2">Tức Ngày 16 tháng 10 năm Bính Ngọ</p>
@@ -88,7 +88,7 @@ export default function WeddingDetails() {
             <p className="text-sm text-white/90 tracking-wide mb-2">THỨ BẢY - 18 : 00</p>
             
             <div className="text-[#d4af37] text-3xl font-bold tracking-wider mb-2">
-              19 . 12 . 2026
+              27 . 07 . 2026
             </div>
             
             <p className="text-xs text-white/80 mb-2">Tức Ngày 15 tháng 10 năm Bính Ngọ</p>
@@ -102,6 +102,26 @@ export default function WeddingDetails() {
             >
               Xem chỉ đường
             </button>
+          </motion.div>
+
+          {/* Đăng ký xe đưa đón */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3, ease: easeSmooth }}
+            className="mt-6 text-center"
+          >
+            <a
+              href="https://forms.gle/j43jADvVwQGoovQ97"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white px-6 py-3 rounded-full text-sm font-semibold shadow-lg hover:from-amber-600 hover:to-amber-700 transition-all"
+            >
+              <span>🚌</span>
+              Đăng ký xe đưa đón
+            </a>
+            <p className="text-xs text-gray-500 mt-2">Vui lòng đăng ký để chúng tôi sắp xếp phương tiện</p>
           </motion.div>
         </div>
       </div>
