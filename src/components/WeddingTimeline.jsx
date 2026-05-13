@@ -5,9 +5,9 @@ const easeSmooth = [0.22, 1, 0.36, 1]
 
 const fadeInUp = {
   initial: { opacity: 0, y: 50, scale: 0.97 },
-  animate: { 
-    opacity: 1, 
-    y: 0, 
+  animate: {
+    opacity: 1,
+    y: 0,
     scale: 1,
     transition: { duration: 1, ease: easeSmooth }
   }
@@ -15,9 +15,9 @@ const fadeInUp = {
 
 const HouseIcon = () => (
   <svg viewBox="0 0 48 48" className="w-8 h-8" fill="none">
-    <path d="M24 4L4 18h4v22h12V28h8v12h12V18h4L24 4z" fill="#f5e6d3" stroke="#c9956a" strokeWidth="1.5" strokeLinejoin="round"/>
-    <rect x="18" y="30" width="12" height="10" rx="1" fill="#c9956a" opacity="0.4"/>
-    <circle cx="24" cy="24" r="2" fill="#c9956a"/>
+    <path d="M24 4L4 18h4v22h12V28h8v12h12V18h4L24 4z" fill="#f5e6d3" stroke="#c9956a" strokeWidth="1.5" strokeLinejoin="round" />
+    <rect x="18" y="30" width="12" height="10" rx="1" fill="#c9956a" opacity="0.4" />
+    <circle cx="24" cy="24" r="2" fill="#c9956a" />
   </svg>
 )
 
@@ -95,11 +95,11 @@ export default function WeddingTimeline() {
           <div className="flex-1">
             <TimelineEvent
               title="LỄ VU QUY"
-              time="CHỦ NHẬT - 09H00"
-              day="20"
-              month="12"
+              time="THỨ 4 - 6H00"
+              day="29"
+              month="07"
               year="2026"
-              lunarDate="Tức Ngày 16 tháng 10 năm Bính Ngọ"
+              lunarDate="Tức Ngày 16 tháng 6 năm Bính Ngọ"
               location="TẠI TƯ GIA NHÀ GÁI"
               delay={0.1}
             />
@@ -112,7 +112,7 @@ export default function WeddingTimeline() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="pt-4"
           >
-            <HouseBadge label="Nhà Gái" mapLink="https://maps.google.com" />
+            <HouseBadge label="Nhà Gái" mapLink="https://maps.app.goo.gl/HGg9mwSLZrQiXoUi6" />
           </motion.div>
         </div>
 
@@ -156,16 +156,16 @@ export default function WeddingTimeline() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="pt-4"
           >
-            <HouseBadge label="Nhà Trai" mapLink="https://maps.google.com" />
+            <HouseBadge label="Nhà Trai" mapLink="https://maps.app.goo.gl/xgXsGSa9t54RuTYV6" />
           </motion.div>
           <div className="flex-1">
             <TimelineEvent
               title="LỄ THÀNH HÔN"
-              time="CHỦ NHẬT - 14H00"
-              day="20"
-              month="12"
+              time="CHỦ NHẬT - 9h00"
+              day="02"
+              month="08"
               year="2026"
-              lunarDate="Tức Ngày 16 tháng 10 năm Bính Ngọ"
+              lunarDate="Tức Ngày 19 tháng 6 năm Bính Ngọ"
               location="TẠI TƯ GIA NHÀ TRAI"
               delay={0.5}
             />

@@ -11,20 +11,8 @@ import CountdownSection from './components/Countdown'
 import ThankYouFooter from './components/ThankYouFooter'
 import FloatingPetals from './components/FloatingPetals'
 import MusicPlayer from './components/MusicPlayer'
-import { useAutoScroll } from './hooks/useAutoScroll'
 
 export default function App() {
-  const { startAutoScroll } = useAutoScroll()
-
-  useEffect(() => {
-    // Start auto-scroll 4s after user opens envelope
-    const handleEnvelopeOpen = () => {
-      setTimeout(() => startAutoScroll(), 4000)
-    }
-    window.addEventListener('envelope-open', handleEnvelopeOpen)
-    return () => window.removeEventListener('envelope-open', handleEnvelopeOpen)
-  }, [startAutoScroll])
-
   return (
     <>
       <FloatingPetals count={20} />

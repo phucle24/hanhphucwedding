@@ -93,3 +93,6 @@ temp/
 # OS generated files
 Thumbs.db
 ehthumbs.db
+
+# Database / Persistent files
+server/wishes.json

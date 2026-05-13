@@ -59,7 +59,7 @@ function WishModal({ isOpen, onClose, onSubmit, isLoading }) {
             onClick={onClose}
             className="fixed inset-0 bg-black/60 z-50"
           />
-          
+
           {/* Modal - tràn viền như hình mẫu */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -100,7 +100,7 @@ function WishModal({ isOpen, onClose, onSubmit, isLoading }) {
                   className="w-full border border-pink-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-pink-400 bg-white/80 placeholder-gray-400"
                   required
                 />
-                
+
                 <textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
@@ -182,7 +182,6 @@ export default function WishesSection() {
           className="text-center mb-6"
         >
           <h2 className="text-2xl font-serif text-gray-800 mb-2">Lời Chúc</h2>
-          <p className="text-gray-600 text-sm">Wishes from loved ones</p>
         </motion.div>
 
         {/* Scrolling wishes container */}
@@ -197,8 +196,8 @@ export default function WishesSection() {
               ease: 'linear',
             }}
           >
-            {/* Double the wishes for seamless loop */}
-            {[...wishes, ...wishes].map((wish, idx) => (
+            {/* Hiển thị danh sách lời chúc gốc, không nhân đôi để có khoảng nghỉ */}
+            {wishes.map((wish, idx) => (
               <div
                 key={`${wish.id}-${idx}`}
                 className="bg-[#e8a8a8]/80 backdrop-blur-sm rounded-xl px-4 py-3 shadow-sm mb-3 mx-2"
@@ -210,6 +209,8 @@ export default function WishesSection() {
                 </p>
               </div>
             ))}
+            {/* Thêm một khoảng trống ảo ở cuối để tạo thời gian nghỉ trước khi lặp lại */}
+            <div className="h-[200px]" />
           </motion.div>
         </div>
 

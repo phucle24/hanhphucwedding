@@ -15,9 +15,9 @@ const staggerContainer = {
 
 const cardReveal = {
   initial: { opacity: 0, y: 50, scale: 0.96 },
-  animate: { 
-    opacity: 1, 
-    y: 0, 
+  animate: {
+    opacity: 1,
+    y: 0,
     scale: 1,
     transition: { duration: 1, ease: easeSmooth }
   }
@@ -51,21 +51,21 @@ export default function WeddingDetails() {
           >
             {/* Heart icon on left */}
             <div className="absolute left-4 bottom-16 text-red-300 text-lg">❤️</div>
-            
+
             <h3 className="text-lg font-serif tracking-wider mb-1">TIỆC CƯỚI NHÀ TRAI</h3>
-            <p className="text-sm text-white/90 tracking-wide mb-2">CHỦ NHẬT - 09:30</p>
-            
+            <p className="text-sm text-white/90 tracking-wide mb-2">CHỦ NHẬT - 10:30</p>
+
             <div className="text-[#d4af37] text-3xl font-bold tracking-wider mb-2">
               02 . 08 . 2026
             </div>
-            
-            <p className="text-xs text-white/80 mb-2">Tức Ngày 16 tháng 10 năm Bính Ngọ</p>
-            
-            <h4 className="text-lg font-serif tracking-wider mb-1">TẠI TƯ GIA NHÀ TRAI</h4>
-            <p className="text-sm text-white/90 mb-4">Tân Mỹ - Tiên Phong - Bắc Ninh</p>
-            
+
+            <p className="text-xs text-white/80 mb-2">Tức Ngày 19 tháng 6 năm Bính Ngọ</p>
+
+            <h4 className="text-lg font-serif tracking-wider mb-1">TẠI HỘI TRƯỜNG THÔN BÀ BẦU</h4>
+            <p className="text-sm text-white/90 mb-4">Thôn Bà Bầu - Tam Xuân - Đà Nẵng</p>
+
             <button
-              onClick={() => window.open('https://maps.google.com', '_blank')}
+              onClick={() => window.open('https://maps.app.goo.gl/9H5JzV6bRVnb3SKj9', '_blank')}
               className="bg-white text-gray-800 px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors shadow-md"
             >
               Xem chỉ đường
@@ -83,21 +83,21 @@ export default function WeddingDetails() {
           >
             {/* Heart icon on right */}
             <div className="absolute right-4 bottom-20 text-red-300 text-lg">❤️</div>
-            
+
             <h3 className="text-lg font-serif tracking-wider mb-1">TIỆC CƯỚI NHÀ GÁI</h3>
-            <p className="text-sm text-white/90 tracking-wide mb-2">THỨ BẢY - 18 : 00</p>
-            
+            <p className="text-sm text-white/90 tracking-wide mb-2">THỨ TƯ - 11 : 00</p>
+
             <div className="text-[#d4af37] text-3xl font-bold tracking-wider mb-2">
-              27 . 07 . 2026
+              29 . 07 . 2026
             </div>
-            
-            <p className="text-xs text-white/80 mb-2">Tức Ngày 15 tháng 10 năm Bính Ngọ</p>
-            
-            <h4 className="text-lg font-serif tracking-wider mb-1">TẠI NHÀ HÀNG SEN VÀNG</h4>
-            <p className="text-sm text-white/90 mb-4">Phú Cát - Quốc Oai - Hà Nội</p>
-            
+
+            <p className="text-xs text-white/80 mb-2">Tức Ngày 16 tháng 6 năm Bính Ngọ</p>
+
+            <h4 className="text-lg font-serif tracking-wider mb-1">TẠI NHÀ HÀNG THANH THẢO 2</h4>
+            <p className="text-sm text-white/90 mb-4">165 Y Wừu - Kbang - Gia Lai<u></u></p>
+
             <button
-              onClick={() => window.open('https://maps.google.com', '_blank')}
+              onClick={() => window.open('https://maps.app.goo.gl/v4ABzVQY74pYoRLz7', '_blank')}
               className="bg-white text-gray-800 px-6 py-2 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors shadow-md"
             >
               Xem chỉ đường
@@ -121,7 +121,7 @@ export default function WeddingDetails() {
               <span>🚌</span>
               Đăng ký xe đưa đón
             </a>
-            <p className="text-xs text-gray-500 mt-2">Vui lòng đăng ký để chúng tôi sắp xếp phương tiện</p>
+            <p className="text-xs text-gray-500 mt-2">Mọi người đăng ký để chúng em/mình sắp xếp chu đáo hơn ạ</p>
           </motion.div>
         </div>
       </div>
