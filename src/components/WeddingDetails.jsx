@@ -59,7 +59,7 @@ export default function WeddingDetails() {
               02 . 08 . 2026
             </div>
 
-            <p className="text-xs text-white/80 mb-2">Tức Ngày 19 tháng 6 năm Bính Ngọ</p>
+            <p className="text-xs text-white/80 mb-2">Nhằm ngày 20 tháng 6 năm Bính Ngọ</p>
 
             <h4 className="text-lg font-serif tracking-wider mb-1">TẠI HỘI TRƯỜNG THÔN BÀ BẦU</h4>
             <p className="text-sm text-white/90 mb-4">Thôn Bà Bầu - Tam Xuân - Đà Nẵng</p>
@@ -91,7 +91,7 @@ export default function WeddingDetails() {
               29 . 07 . 2026
             </div>
 
-            <p className="text-xs text-white/80 mb-2">Tức Ngày 16 tháng 6 năm Bính Ngọ</p>
+            <p className="text-xs text-white/80 mb-2">Nhằm ngày 16 tháng 6 năm Bính Ngọ</p>
 
             <h4 className="text-lg font-serif tracking-wider mb-1">TẠI NHÀ HÀNG THANH THẢO 2</h4>
             <p className="text-sm text-white/90 mb-4">165 Y Wừu - Kbang - Gia Lai<u></u></p>

@@ -13,27 +13,6 @@ export const config = {
   // --- Wedding Date (ISO format) ---
   weddingDate: '2026-08-02T10:00:00',   // YYYY-MM-DDTHH:MM:SS
 
-  // --- Ceremony (Nhà Trai - Groom's House) ---
-  ceremony: {
-    title: 'TIỆC CƯỚI NHÀ TRAI',
-    dayTime: 'CHỦ NHẬT - 10:30',
-    dateNumber: '02.08.2026',
-    lunarDate: 'Tức Ngày 19 tháng 6 năm Bính Ngọ',
-    venue: 'TẠI HỘI TRƯỜNG THÔN BÀ BẦU',
-    address: 'Bà Bầu - Tam Xuân - Đà Nẵng',
-    mapLink: 'https://maps.google.com',
-  },
-
-  // --- Reception (Nhà Gái - Bride's House) ---
-  reception: {
-    title: 'TIỆC CƯỚI NHÀ GÁI',
-    dayTime: 'THỨ TƯ - 10:30',
-    dateNumber: '19.12.2026',
-    lunarDate: 'Tức Ngày 15 tháng 10 năm Bính Ngọ',
-    venue: 'TẠI NHÀ HÀNG THANH THẢO 2',
-    address: 'Phú Cát - Quốc Oai - Hà Nội',
-    mapLink: 'https://maps.google.com',
-  },
 
   // --- Our Story milestones ---
   story: [
