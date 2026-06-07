@@ -4,20 +4,68 @@ import { Music, Music2 } from 'lucide-react'
 export default function MusicPlayer() {
   const [playing, setPlaying] = useState(false)
   const audioRef = useRef(null)
+  const hasStartedRef = useRef(false)
 
-  // Auto-play when envelope is opened
+  // Auto-play on envelope open OR first user interaction (for root link / direct access)
   useEffect(() => {
-    const handleEnvelopeOpen = () => {
-      if (!audioRef.current || playing) return
-      audioRef.current.play().catch(() => {})
-      setPlaying(true)
+    if (hasStartedRef.current) return
+
+    const startMusic = () => {
+      if (hasStartedRef.current || !audioRef.current) return
+      audioRef.current.play().then(() => {
+        setPlaying(true)
+        hasStartedRef.current = true
+        removeListeners()
+      }).catch((err) => {
+        // Autoplay blocked by browser policy, keep listening for next interaction
+        console.log("Autoplay blocked:", err)
+      })
     }
-    window.addEventListener('envelope-open', handleEnvelopeOpen)
-    return () => window.removeEventListener('envelope-open', handleEnvelopeOpen)
+
+    const handleEnvelopeOpen = () => {
+      startMusic()
+    }
+
+    const handleUserInteraction = () => {
+      startMusic()
+    }
+
+    const addListeners = () => {
+      window.addEventListener('envelope-open', handleEnvelopeOpen)
+      window.addEventListener('touchstart', handleUserInteraction, { passive: true })
+      window.addEventListener('mousedown', handleUserInteraction, { passive: true })
+      window.addEventListener('wheel', handleUserInteraction, { passive: true })
+      window.addEventListener('keydown', handleUserInteraction, { passive: true })
+    }
+
+    const removeListeners = () => {
+      window.removeEventListener('envelope-open', handleEnvelopeOpen)
+      window.removeEventListener('touchstart', handleUserInteraction)
+      window.removeEventListener('mousedown', handleUserInteraction)
+      window.removeEventListener('wheel', handleUserInteraction)
+      window.removeEventListener('keydown', handleUserInteraction)
+    }
+
+    addListeners()
+    
+    // Attempt autoplay immediately in case browser allows it (e.g. relaxed policy)
+    const autoPlayTimeout = setTimeout(() => {
+      const searchParams = new URLSearchParams(window.location.search)
+      const hasGuest = searchParams.get('to') || searchParams.get('g')
+      if (!hasGuest) {
+        startMusic()
+      }
+    }, 1000)
+
+    return () => {
+      removeListeners()
+      clearTimeout(autoPlayTimeout)
+    }
   }, [playing])
 
   const toggle = () => {
     if (!audioRef.current) return
+    hasStartedRef.current = true // User interacted directly, disable auto-start listeners
     if (playing) {
       audioRef.current.pause()
     } else {
