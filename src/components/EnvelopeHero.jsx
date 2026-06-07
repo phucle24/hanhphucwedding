@@ -1,37 +1,12 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { config } from '../weddingConfig'
 
 export default function EnvelopeHero({ guestName, onOpen }) {
-  const [rotateX, setRotateX] = useState(0)
-  const [rotateY, setRotateY] = useState(0)
-  const cardRef = useRef(null)
-
-  const handleMouseMove = (e) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const width = rect.width
-    const height = rect.height
-    const mouseX = e.clientX - rect.left - width / 2
-    const mouseY = e.clientY - rect.top - height / 2
-    
-    // Tilt calculations (max 10 degrees)
-    const rY = (mouseX / (width / 2)) * 10
-    const rX = -(mouseY / (height / 2)) * 10
-    
-    setRotateX(rX)
-    setRotateY(rY)
-  }
-
-  const handleMouseLeave = () => {
-    setRotateX(0)
-    setRotateY(0)
-  }
-
   const handleOpen = useCallback(() => {
     // Trigger music via custom event
     window.dispatchEvent(new CustomEvent('envelope-open'))
-    
+
     // Trigger onOpen callback to dismiss overlay card
     if (onOpen) {
       onOpen()
@@ -45,53 +20,53 @@ export default function EnvelopeHero({ guestName, onOpen }) {
   const getPronoun = (name, override) => {
     if (override) return override.trim()
     if (!name) return 'chúng em'
-    
+
     const lowerName = name.toLowerCase()
-    
+
     // Juniors -> Couple is "anh chị" (older sibling/couple)
     if (
-      lowerName.startsWith('em') || 
-      lowerName.includes(' em ') || 
-      lowerName.startsWith('cháu') || 
-      lowerName.includes(' cháu ') || 
+      lowerName.startsWith('em') ||
+      lowerName.includes(' em ') ||
+      lowerName.startsWith('cháu') ||
+      lowerName.includes(' cháu ') ||
       lowerName.startsWith('gia đình em')
     ) {
       return 'anh chị'
     }
-    
+
     // Peers -> Couple is "chúng mình"
     if (
-      lowerName.startsWith('bạn') || 
-      lowerName.includes(' bạn ') || 
-      lowerName.startsWith('cậu') || 
+      lowerName.startsWith('bạn') ||
+      lowerName.includes(' bạn ') ||
+      lowerName.startsWith('cậu') ||
       lowerName.startsWith('tớ')
     ) {
       return 'chúng mình'
     }
-    
+
     // Seniors -> Couple is "chúng em"
     if (
-      lowerName.startsWith('anh') || 
-      lowerName.startsWith('chị') || 
-      lowerName.startsWith('cô') || 
-      lowerName.startsWith('chú') || 
-      lowerName.startsWith('bác') || 
-      lowerName.startsWith('dì') || 
-      lowerName.startsWith('dượng') || 
+      lowerName.startsWith('anh') ||
+      lowerName.startsWith('chị') ||
+      lowerName.startsWith('cô') ||
+      lowerName.startsWith('chú') ||
+      lowerName.startsWith('bác') ||
+      lowerName.startsWith('dì') ||
+      lowerName.startsWith('dượng') ||
       lowerName.startsWith('thầy') ||
       lowerName.startsWith('gia đình anh') ||
       lowerName.startsWith('gia đình chị')
     ) {
       return 'chúng em'
     }
-    
+
     return 'chúng em' // default
   }
 
   // Parse header and guest name to avoid duplication (e.g. "Thân mời Gia đình em..." vs "Thân Mời")
   let cleanGuestName = guestName || 'Quý Khách'
   let invitationHeader = 'Thân Mời'
-  
+
   if (guestName) {
     const lowerName = guestName.toLowerCase()
     if (lowerName.startsWith('kính mời')) {
@@ -113,7 +88,7 @@ export default function EnvelopeHero({ guestName, onOpen }) {
       const day = date.getDate()
       const month = date.getMonth() + 1
       const year = date.getFullYear()
-      return `${day} tháng ${month}, ${year}`
+      return `0${day} tháng 0${month}, ${year}`
     } catch (e) {
       return '2 tháng 8, 2026'
     }
@@ -121,11 +96,10 @@ export default function EnvelopeHero({ guestName, onOpen }) {
 
   return (
     <motion.section 
-      initial={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 1 }}
       exit={{ 
-        y: '-100vh', 
         opacity: 0,
-        transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } 
+        transition: { duration: 0.7, ease: 'easeInOut' } 
       }}
       className="fixed inset-0 w-full h-full flex flex-col items-center justify-center bg-[#3e2723] z-50 overflow-hidden py-8 px-4"
       id="home"
@@ -139,48 +113,35 @@ export default function EnvelopeHero({ guestName, onOpen }) {
       </div>
 
       {/* Khung Thiệp chính */}
-      <div 
-        className="w-[320px] h-[460px] cursor-pointer select-none"
-        style={{ perspective: '1000px' }}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+      <motion.div 
+        initial={{ opacity: 1, y: 0 }}
+        exit={{ 
+          y: -120, 
+          opacity: 0,
+          transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] } 
+        }}
+        className="w-[320px] h-[460px] cursor-pointer select-none relative"
       >
-        <motion.div
-          ref={cardRef}
-          animate={{ rotateX, rotateY }}
-          transition={{ type: 'spring', stiffness: 200, damping: 20, mass: 0.5 }}
-          className="w-full h-full relative animate-float-slow"
-          style={{
-            transformStyle: 'preserve-3d'
-          }}
-        >
+        <div className="w-full h-full relative animate-float-slow">
           {/* Card Base (z-0): Paper texture, borders, and main shadow */}
-          <div 
-            className="absolute inset-0 rounded-[24px] border border-[#d4af37]/25 bg-[#faf6f0] shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden"
+          <div
+            className="absolute inset-0 rounded-[24px] border border-[#d4af37]/25 bg-[#faf6f0] shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden pointer-events-none"
             style={{
               backgroundImage: "url('/themes/nhat-binh-red/paper.webp')",
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              transform: 'translateZ(0px)',
-              pointerEvents: 'none',
             }}
           />
           {/* Subtle gold inner border */}
-          <div 
-            className="absolute inset-2.5 rounded-[16px] border border-[#d4af37]/20 pointer-events-none"
-            style={{ transform: 'translateZ(2px)' }}
-          />
+          <div className="absolute inset-2.5 rounded-[16px] border border-[#d4af37]/20 pointer-events-none" />
 
           {/* Card Content Layer */}
-          <div 
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center"
-            style={{ transform: 'translateZ(25px)' }}
-          >
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center">
             {/* Center Chữ Hỷ */}
-            <img 
-              src="/themes/nhat-binh-red/chu-hy.webp" 
-              className="w-8 h-8 object-contain pointer-events-none select-none mb-4" 
-              alt="Chữ Hỷ" 
+            <img
+              src="/themes/nhat-binh-red/chu-hy.webp"
+              className="w-8 h-8 object-contain pointer-events-none select-none mb-4"
+              alt="Chữ Hỷ"
             />
 
             {/* Names (Vertical stacked layout) */}
@@ -227,35 +188,30 @@ export default function EnvelopeHero({ guestName, onOpen }) {
           </div>
 
           {/* Ornaments in corners (placed behind content z-10) */}
-          <img 
-            src="/themes/nhat-binh-red/hoa.webp" 
-            className="absolute top-2 left-2 w-20 pointer-events-none select-none z-10" 
-            style={{ transform: 'translateZ(10px)' }}
-            alt="" 
+          <img
+            src="/themes/nhat-binh-red/hoa.webp"
+            className="absolute top-0 left-0 w-16 pointer-events-none select-none z-10"
+            alt=""
           />
-          <motion.img 
-            src="/themes/nhat-binh-red/long-den.webp" 
-            className="absolute top-2 right-4 w-9 pointer-events-none select-none z-10 origin-top" 
-            style={{ transform: 'translateZ(15px)' }}
+          <motion.img
+            src="/themes/nhat-binh-red/long-den.webp"
+            className="absolute top-2 right-4 w-9 pointer-events-none select-none z-10 origin-top"
             animate={{ rotate: [-2, 2, -2] }}
             transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-            alt="" 
+            alt=""
           />
-          <img 
-            src="/themes/nhat-binh-red/quat.webp" 
-            className="absolute bottom-2 left-2 w-20 pointer-events-none select-none z-10" 
-            style={{ transform: 'translateZ(10px)' }}
-            alt="" 
+          <img
+            src="/themes/nhat-binh-red/quat.webp"
+            className="absolute bottom-2 left-2 w-20 pointer-events-none select-none z-10"
+            alt=""
           />
-          <img 
-            src="/themes/nhat-binh-red/may-to.webp" 
-            className="absolute bottom-2 right-2 w-20 pointer-events-none select-none z-10" 
-            style={{ transform: 'translateZ(12px)' }}
-            alt="" 
+          <img
+            src="/themes/nhat-binh-red/may-to.webp"
+            className="absolute bottom-2 right-2 w-20 pointer-events-none select-none z-10"
+            alt=""
           />
-
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
 
       <div className="absolute top-6 left-3 text-sm opacity-20 animate-float pointer-events-none">🌸</div>
       <div className="absolute top-10 right-4 text-xs opacity-15 animate-float pointer-events-none" style={{ animationDelay: '1.2s' }}>🌺</div>

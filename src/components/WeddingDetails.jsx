@@ -59,15 +59,15 @@ export default function WeddingDetails({ side }) {
                   : ''
             }`}
           >
-            {/* Guest side badge */}
+            {/* Heart icon on left */}
+            <div className="absolute left-4 bottom-16 text-red-300 text-lg">❤️</div>
+
+            {/* Guest side badge - placed inline to prevent overlapping header */}
             {isGroomSide && (
-              <div className="absolute top-3 right-4 bg-amber-400 text-amber-950 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
+              <div className="inline-block mx-auto mb-2 bg-amber-400 text-amber-950 text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
                 Sự kiện dành cho bạn
               </div>
             )}
-
-            {/* Heart icon on left */}
-            <div className="absolute left-4 bottom-16 text-red-300 text-lg">❤️</div>
 
             <h3 className="text-lg font-serif tracking-wider mb-1">TIỆC CƯỚI NHÀ TRAI</h3>
             <p className="text-sm text-white/90 tracking-wide mb-2">CHỦ NHẬT - 10:30</p>
@@ -104,15 +104,15 @@ export default function WeddingDetails({ side }) {
                   : ''
             }`}
           >
-            {/* Guest side badge */}
+            {/* Heart icon on right */}
+            <div className="absolute right-4 bottom-20 text-red-300 text-lg">❤️</div>
+
+            {/* Guest side badge - placed inline to prevent overlapping header */}
             {isBrideSide && (
-              <div className="absolute top-3 right-4 bg-amber-400 text-amber-950 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
+              <div className="inline-block mx-auto mb-2 bg-amber-400 text-amber-950 text-[9px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
                 Sự kiện dành cho bạn
               </div>
             )}
-
-            {/* Heart icon on right */}
-            <div className="absolute right-4 bottom-20 text-red-300 text-lg">❤️</div>
 
             <h3 className="text-lg font-serif tracking-wider mb-1">TIỆC CƯỚI NHÀ GÁI</h3>
             <p className="text-sm text-white/90 tracking-wide mb-2">THỨ TƯ - 11 : 00</p>
