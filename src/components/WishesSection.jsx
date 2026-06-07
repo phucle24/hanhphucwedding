@@ -33,15 +33,21 @@ function WishBubble({ wish, delay }) {
   )
 }
 
-function WishModal({ isOpen, onClose, onSubmit, isLoading }) {
-  const [name, setName] = useState('')
+function WishModal({ isOpen, onClose, onSubmit, isLoading, defaultName }) {
+  const [name, setName] = useState(defaultName || '')
   const [message, setMessage] = useState('')
+
+  // Sync state with defaultName when defaultName changes or modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setName(defaultName || '')
+    }
+  }, [isOpen, defaultName])
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (name.trim() && message.trim()) {
       onSubmit(name.trim(), message.trim())
-      setName('')
       setMessage('')
       onClose()
     }
@@ -128,7 +134,7 @@ function WishModal({ isOpen, onClose, onSubmit, isLoading }) {
 
 const EMOJI_LIST = ['💝', '💐', '🎊', '🕊️', '🎁', '💖', '🌸', '✨']
 
-export default function WishesSection() {
+export default function WishesSection({ guestName }) {
   const [wishes, setWishes] = useState(INITIAL_WISHES)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showToast, setShowToast] = useState(false)
@@ -233,6 +239,7 @@ export default function WishesSection() {
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleSubmit}
           isLoading={isLoading}
+          defaultName={guestName}
         />
 
         {/* Success Toast */}

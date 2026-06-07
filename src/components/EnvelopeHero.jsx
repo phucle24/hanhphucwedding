@@ -1,272 +1,264 @@
-import React, { useState, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useState, useCallback, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { config } from '../weddingConfig'
 
-/*
- * ENVELOPE LAYOUT (all values in px, mobile-first)
- *
- *  comboH = peek + envH
- *  ┌──────────────────────────────┐  ← y = 0 (combo top)
- *  │  peek area (photo shows here)│  peek = 85px
- *  ├──────────────────────────────┤  ← y = peek (envelope top)
- *  │  opening depth               │  openH = 105px  ← photo visible inside here (z=10)
- *  ├──────────────────────────────┤  ← y = peek + openH
- *  │  solid body                  │  bodyH = 110px  ← front face at z=15 covers photo
- *  └──────────────────────────────┘  ← y = comboH
- *
- *  Z-index stack:
- *   2  envelope back (dark red rectangle)
- *  10  photo (slides from y=envH to y=0)
- *  15  envelope BODY FRONT (solid, lower portion only — makes photo look "inside")
- *  16  decorative fold lines on body front
- *  20  wax seal (envelope.webp)
- *  25  top flap (closed) / invisible when opened (backfaceVisibility: hidden)
- */
-const W = 340          // wider envelope
-const envH = 220        // taller envelope
-const photoW = 300      // wider photo
-const photoH = 320      // taller photo - half inside, half outside
-const photoPeek = 160   // 160px outside, 160px inside when opened
-const comboH = photoPeek + envH  // total container height
+export default function EnvelopeHero({ guestName, onOpen }) {
+  const [rotateX, setRotateX] = useState(0)
+  const [rotateY, setRotateY] = useState(0)
+  const cardRef = useRef(null)
 
-function FlyingHearts({ isActive }) {
-  const hearts = Array.from({ length: 14 }, (_, i) => ({
-    id: i,
-    x: (Math.random() - 0.5) * 280,
-    y: -(Math.random() * 180 + 60),
-    scale: 0.4 + Math.random() * 0.7,
-    delay: Math.random() * 0.4,
-    emoji: ['💖', '💕', '💗', '💝', '💘', '❤️'][Math.floor(Math.random() * 6)]
-  }))
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return
+    const rect = cardRef.current.getBoundingClientRect()
+    const width = rect.width
+    const height = rect.height
+    const mouseX = e.clientX - rect.left - width / 2
+    const mouseY = e.clientY - rect.top - height / 2
+    
+    // Tilt calculations (max 10 degrees)
+    const rY = (mouseX / (width / 2)) * 10
+    const rX = -(mouseY / (height / 2)) * 10
+    
+    setRotateX(rX)
+    setRotateY(rY)
+  }
 
-  return (
-    <AnimatePresence>
-      {isActive && hearts.map((heart) => (
-        <motion.div
-          key={heart.id}
-          initial={{ opacity: 1, x: 0, y: 0, scale: 0 }}
-          animate={{ opacity: 0, x: heart.x, y: heart.y, scale: heart.scale }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 1.4, delay: heart.delay, ease: 'easeOut' }}
-          className="absolute pointer-events-none text-xl"
-          style={{ left: '50%', top: '40%', transform: 'translate(-50%,-50%)', zIndex: 50 }}
-        >
-          {heart.emoji}
-        </motion.div>
-      ))}
-    </AnimatePresence>
-  )
-}
-
-export default function EnvelopeHero() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [showPhoto, setShowPhoto] = useState(false)
-  const [showHearts, setShowHearts] = useState(false)
+  const handleMouseLeave = () => {
+    setRotateX(0)
+    setRotateY(0)
+  }
 
   const handleOpen = useCallback(() => {
-    if (isOpen) return
-    setIsOpen(true)
-    // Hearts
-    setShowHearts(true)
-    setTimeout(() => setShowHearts(false), 2500)
-    // Photo slides up after flap opens
-    setTimeout(() => setShowPhoto(true), 500)
-    // Trigger music + auto-scroll via custom event
+    // Trigger music via custom event
     window.dispatchEvent(new CustomEvent('envelope-open'))
-  }, [isOpen])
+    
+    // Trigger onOpen callback to dismiss overlay card
+    if (onOpen) {
+      onOpen()
+    }
+  }, [onOpen])
+
+  // Relationship pronoun detection helper
+  const searchParams = new URLSearchParams(window.location.search)
+  const urlRelation = searchParams.get('r')
+
+  const getPronoun = (name, override) => {
+    if (override) return override.trim()
+    if (!name) return 'chúng em'
+    
+    const lowerName = name.toLowerCase()
+    
+    // Juniors -> Couple is "anh chị" (older sibling/couple)
+    if (
+      lowerName.startsWith('em') || 
+      lowerName.includes(' em ') || 
+      lowerName.startsWith('cháu') || 
+      lowerName.includes(' cháu ') || 
+      lowerName.startsWith('gia đình em')
+    ) {
+      return 'anh chị'
+    }
+    
+    // Peers -> Couple is "chúng mình"
+    if (
+      lowerName.startsWith('bạn') || 
+      lowerName.includes(' bạn ') || 
+      lowerName.startsWith('cậu') || 
+      lowerName.startsWith('tớ')
+    ) {
+      return 'chúng mình'
+    }
+    
+    // Seniors -> Couple is "chúng em"
+    if (
+      lowerName.startsWith('anh') || 
+      lowerName.startsWith('chị') || 
+      lowerName.startsWith('cô') || 
+      lowerName.startsWith('chú') || 
+      lowerName.startsWith('bác') || 
+      lowerName.startsWith('dì') || 
+      lowerName.startsWith('dượng') || 
+      lowerName.startsWith('thầy') ||
+      lowerName.startsWith('gia đình anh') ||
+      lowerName.startsWith('gia đình chị')
+    ) {
+      return 'chúng em'
+    }
+    
+    return 'chúng em' // default
+  }
+
+  // Parse header and guest name to avoid duplication (e.g. "Thân mời Gia đình em..." vs "Thân Mời")
+  let cleanGuestName = guestName || 'Quý Khách'
+  let invitationHeader = 'Thân Mời'
+  
+  if (guestName) {
+    const lowerName = guestName.toLowerCase()
+    if (lowerName.startsWith('kính mời')) {
+      invitationHeader = 'Kính Mời'
+      cleanGuestName = guestName.substring(8).trim()
+    } else if (lowerName.startsWith('thân mời')) {
+      invitationHeader = 'Thân Mời'
+      cleanGuestName = guestName.substring(8).trim()
+    } else if (lowerName.startsWith('thân gửi')) {
+      invitationHeader = 'Thân Gửi'
+      cleanGuestName = guestName.substring(8).trim()
+    }
+  }
+
+  // Format wedding date to short Vietnamese: "2 tháng 8, 2026"
+  const formatWeddingDateShort = (dateStr) => {
+    try {
+      const date = new Date(dateStr)
+      const day = date.getDate()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear()
+      return `${day} tháng ${month}, ${year}`
+    } catch (e) {
+      return '2 tháng 8, 2026'
+    }
+  }
 
   return (
-    <section
+    <motion.section 
+      initial={{ opacity: 1, y: 0 }}
+      exit={{ 
+        y: '-100vh', 
+        opacity: 0,
+        transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } 
+      }}
+      className="fixed inset-0 w-full h-full flex flex-col items-center justify-center bg-[#3e2723] z-50 overflow-hidden py-8 px-4"
       id="home"
-      className="relative flex flex-col items-center justify-center py-3 px-4 overflow-hidden"
-      style={{ backgroundColor: '#fdf6f3' }}
     >
-      {/* Header text */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-center mb-2"
+      {/* Background Chữ Hỷ ở 2 bên */}
+      <div className="absolute left-10 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none hidden lg:block select-none">
+        <img src="/themes/nhat-binh-red/chu-hy.webp" className="w-32 h-32" alt="Hỷ" />
+      </div>
+      <div className="absolute right-10 top-1/2 -translate-y-1/2 opacity-5 pointer-events-none hidden lg:block select-none">
+        <img src="/themes/nhat-binh-red/chu-hy.webp" className="w-32 h-32" alt="Hỷ" />
+      </div>
+
+      {/* Khung Thiệp chính */}
+      <div 
+        className="w-[320px] h-[460px] cursor-pointer select-none"
+        style={{ perspective: '1000px' }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
       >
-        <h1 className="text-xl tracking-[0.2em] text-[#6b2d2d] font-medium">
-          THIỆP MỜI CƯỚI
-        </h1>
-      </motion.div>
-
-      {/* Names positioned on left and right above envelope */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="relative"
-        style={{ width: W, height: 35, marginBottom: isOpen ? 20 : -10 }}
-      >
-        {/* Bride name - left */}
-        <span 
-          className="absolute left-0 top-0 text-3xl text-gray-800"
-          style={{ fontFamily: "'Great Vibes', cursive" }}
-        >
-          {config.brideName}
-        </span>
-        {/* Groom name - right */}
-        <span 
-          className="absolute right-0 top-0 text-3xl text-gray-800"
-          style={{ fontFamily: "'Great Vibes', cursive" }}
-        >
-          {config.groomName}
-        </span>
-      </motion.div>
-
-      {/* ═══ ENVELOPE + PHOTO COMBO ═══ */}
-      <motion.div
-        className="relative"
-        style={{ 
-          width: W, 
-          height: isOpen ? comboH : envH, 
-          cursor: isOpen ? 'default' : 'pointer', 
-          perspective: 800,
-          marginTop: isOpen ? 0 : -30
-        }}
-        onClick={!isOpen ? handleOpen : undefined}
-        animate={isOpen
-          ? { scale: 1.05, y: [-5, 5, -5, 5, 0] }
-          : { scale: [1, 1.02, 1, 1.01, 1], y: [0, -4, 0, -2, 0] }
-        }
-        transition={isOpen
-          ? { duration: 0.8, ease: 'easeOut' }
-          : { duration: 2.5, repeat: Infinity, ease: 'easeInOut' }
-        }
-      >
-        <FlyingHearts isActive={showHearts} />
-
-        {/* z=2 — Envelope back (dark interior) */}
-        <div
-          className="absolute left-0 right-0 bottom-0 rounded-lg"
-          style={{
-            height: envH,
-            zIndex: 2,
-            background: 'linear-gradient(180deg, #a03535 0%, #8b2323 100%)',
-            boxShadow: '0 10px 40px rgba(139,35,35,0.3)',
-          }}
-        />
-
-        {/* z=10 — Wedding photo: hidden when closed, slides up when opened */}
         <motion.div
-          initial={false}
-          animate={showPhoto
-            ? { y: -photoPeek, opacity: 1, scale: 1 }
-            : { y: 0, opacity: 0, scale: 0.95 }
-          }
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute overflow-hidden rounded-lg shadow-2xl"
+          ref={cardRef}
+          animate={{ rotateX, rotateY }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20, mass: 0.5 }}
+          className="w-full h-full relative animate-float-slow"
           style={{
-            top: photoPeek,
-            left: (W - photoW) / 2,
-            width: photoW,
-            height: photoH,
-            zIndex: 10,
+            transformStyle: 'preserve-3d'
           }}
         >
-          <img
-            src={config.gallery[0]}
-            alt="Ảnh cưới"
-            className="w-full h-full object-cover object-top"
-          />
-        </motion.div>
-
-        {/* z=15 — Envelope BODY with triangular side flaps */}
-        <motion.div
-          className="absolute left-0 right-0 bottom-0 pointer-events-none"
-          style={{ height: envH, zIndex: 15 }}
-          animate={isOpen ? { y: envH * 0.4, opacity: 0.3 } : { y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-        >
-          {/* Base color */}
-          <div className="absolute inset-0 rounded-lg" style={{ background: '#b94444' }} />
-          
-          {/* Left triangular flap */}
-          <div
-            className="absolute left-0 top-0"
+          {/* Card Base (z-0): Paper texture, borders, and main shadow */}
+          <div 
+            className="absolute inset-0 rounded-[24px] border border-[#d4af37]/25 bg-[#faf6f0] shadow-[0_25px_60px_rgba(0,0,0,0.7)] overflow-hidden"
             style={{
-              width: '50%',
-              height: '100%',
-              background: 'linear-gradient(135deg, #c95454 0%, #a03535 100%)',
-              clipPath: 'polygon(0 0, 100% 50%, 0 100%)',
+              backgroundImage: "url('/themes/nhat-binh-red/paper.webp')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              transform: 'translateZ(0px)',
+              pointerEvents: 'none',
             }}
           />
-          
-          {/* Right triangular flap */}
-          <div
-            className="absolute right-0 top-0"
-            style={{
-              width: '50%',
-              height: '100%',
-              background: 'linear-gradient(-135deg, #c95454 0%, #a03535 100%)',
-              clipPath: 'polygon(100% 0, 0 50%, 100% 100%)',
-            }}
+          {/* Subtle gold inner border */}
+          <div 
+            className="absolute inset-2.5 rounded-[16px] border border-[#d4af37]/20 pointer-events-none"
+            style={{ transform: 'translateZ(2px)' }}
           />
-          
-          {/* Bottom triangular flap */}
-          <div
-            className="absolute bottom-0 left-0 right-0"
-            style={{
-              height: '60%',
-              background: 'linear-gradient(to top, #9a3030 0%, #b94444 100%)',
-              clipPath: 'polygon(0 100%, 50% 0, 100% 100%)',
-            }}
-          />
-        </motion.div>
 
-        {/* z=20 — Wax seal positioned at center of envelope body */}
-        <motion.div
-          className="absolute pointer-events-none"
-          style={{
-            bottom: envH * 0.35,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 20,
-          }}
-          animate={isOpen ? { scale: 0.85, opacity: 0.6 } : { scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-        >
-          <img
-            src="/envelope.webp"
-            alt="seal"
-            className="w-12 h-12 drop-shadow-lg"
-          />
-        </motion.div>
-
-
-        {/* Drop shadow */}
-        <div
-          className="absolute rounded-full blur-lg pointer-events-none"
-          style={{
-            bottom: -10, left: '5%', right: '5%', height: 15,
-            background: 'rgba(0,0,0,0.15)', zIndex: 1,
-          }}
-        />
-      </motion.div>
-
-      {/* "Chạm để mở thiệp" button */}
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
-            onClick={handleOpen}
-            className="mt-3 px-7 py-2.5 rounded-full border border-[#d4a0a0] bg-white/75 backdrop-blur-sm shadow-md active:scale-95 transition-transform select-none"
+          {/* Card Content Layer */}
+          <div 
+            className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center"
+            style={{ transform: 'translateZ(25px)' }}
           >
-            <span className="font-script text-[#8b4545] text-base tracking-wide">
-              Chạm để mở thiệp
-            </span>
-          </motion.button>
-        )}
-      </AnimatePresence>
+            {/* Center Chữ Hỷ */}
+            <img 
+              src="/themes/nhat-binh-red/chu-hy.webp" 
+              className="w-8 h-8 object-contain pointer-events-none select-none mb-4" 
+              alt="Chữ Hỷ" 
+            />
 
-      <div className="absolute top-6 left-3 text-sm opacity-20 animate-float">🌸</div>
-      <div className="absolute top-10 right-4 text-xs opacity-15 animate-float" style={{ animationDelay: '1.2s' }}>🌺</div>
-    </section>
+            {/* Names (Vertical stacked layout) */}
+            <div className="flex flex-col items-center text-[#a32a2a] font-serif text-[24px] font-black tracking-[0.05em] leading-tight select-none">
+              <span>{config.groomName.toUpperCase()}</span>
+              <span className="text-sm font-light text-[#8b3a3a] my-1 font-sans opacity-70">&amp;</span>
+              <span>{config.brideName.toUpperCase()}</span>
+            </div>
+
+            {/* Date */}
+            <span className="text-gray-500 text-[11px] font-medium tracking-wide mt-2.5 select-none">
+              {formatWeddingDateShort(config.weddingDate)}
+            </span>
+
+            {/* Divider line */}
+            <div className="w-12 h-px bg-amber-600/30 my-3" />
+
+            {/* Header */}
+            <span className="text-[#a32a2a] font-serif italic text-[14px] font-semibold mb-1 select-none">
+              {invitationHeader}
+            </span>
+
+            {/* Name pill - blueish background box */}
+            <div className="bg-[#eaeef3]/95 border border-[#d2dfec] px-6 py-1.5 rounded-full shadow-sm flex items-center justify-center max-w-[90%] mt-1 select-none">
+              <span className="text-[#1e3a5f] font-bold text-sm tracking-wide">
+                {cleanGuestName}
+              </span>
+            </div>
+
+            {/* Relation Invite subtext */}
+            <span className="text-gray-500 text-[11px] font-light mt-2.5 select-none">
+              Dự tiệc chung vui cùng {getPronoun(guestName, urlRelation)}
+            </span>
+
+            {/* Mở thiệp Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleOpen}
+              className="mt-6 px-10 py-2.5 bg-gradient-to-r from-[#f54343] to-[#e03535] text-white text-xs font-bold uppercase tracking-widest rounded-full shadow-md hover:shadow-lg transition-all cursor-pointer select-none"
+            >
+              Mở thiệp
+            </motion.button>
+          </div>
+
+          {/* Ornaments in corners (placed behind content z-10) */}
+          <img 
+            src="/themes/nhat-binh-red/hoa.webp" 
+            className="absolute top-2 left-2 w-20 pointer-events-none select-none z-10" 
+            style={{ transform: 'translateZ(10px)' }}
+            alt="" 
+          />
+          <motion.img 
+            src="/themes/nhat-binh-red/long-den.webp" 
+            className="absolute top-2 right-4 w-9 pointer-events-none select-none z-10 origin-top" 
+            style={{ transform: 'translateZ(15px)' }}
+            animate={{ rotate: [-2, 2, -2] }}
+            transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+            alt="" 
+          />
+          <img 
+            src="/themes/nhat-binh-red/quat.webp" 
+            className="absolute bottom-2 left-2 w-20 pointer-events-none select-none z-10" 
+            style={{ transform: 'translateZ(10px)' }}
+            alt="" 
+          />
+          <img 
+            src="/themes/nhat-binh-red/may-to.webp" 
+            className="absolute bottom-2 right-2 w-20 pointer-events-none select-none z-10" 
+            style={{ transform: 'translateZ(12px)' }}
+            alt="" 
+          />
+
+        </motion.div>
+      </div>
+
+      <div className="absolute top-6 left-3 text-sm opacity-20 animate-float pointer-events-none">🌸</div>
+      <div className="absolute top-10 right-4 text-xs opacity-15 animate-float pointer-events-none" style={{ animationDelay: '1.2s' }}>🌺</div>
+    </motion.section>
   )
 }

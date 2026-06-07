@@ -23,7 +23,11 @@ const cardReveal = {
   }
 }
 
-export default function WeddingDetails() {
+export default function WeddingDetails({ side }) {
+  const isGroomSide = side === 'trai'
+  const isBrideSide = side === 'gai'
+  const hasSideFilter = isGroomSide || isBrideSide
+
   return (
     <section className="py-8 px-4 bg-white">
       <div className="max-w-md mx-auto">
@@ -47,8 +51,21 @@ export default function WeddingDetails() {
             initial="initial"
             whileInView="animate"
             viewport={{ once: true, margin: "-80px" }}
-            className="relative bg-gradient-to-br from-[#6b1a1a] to-[#8b2323] rounded-3xl p-5 text-white text-center shadow-xl overflow-hidden"
+            className={`relative bg-gradient-to-br from-[#6b1a1a] to-[#8b2323] rounded-3xl p-5 text-white text-center shadow-xl overflow-hidden transition-all duration-500 ${
+              isGroomSide 
+                ? 'ring-4 ring-amber-400 scale-[1.03] shadow-amber-500/20' 
+                : hasSideFilter 
+                  ? 'opacity-60 grayscale-[10%]' 
+                  : ''
+            }`}
           >
+            {/* Guest side badge */}
+            {isGroomSide && (
+              <div className="absolute top-3 right-4 bg-amber-400 text-amber-950 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
+                Sự kiện dành cho bạn
+              </div>
+            )}
+
             {/* Heart icon on left */}
             <div className="absolute left-4 bottom-16 text-red-300 text-lg">❤️</div>
 
@@ -79,8 +96,21 @@ export default function WeddingDetails() {
             whileInView="animate"
             viewport={{ once: true, margin: "-80px" }}
             transition={{ delay: 0.15 }}
-            className="relative bg-gradient-to-br from-[#6b1a1a] to-[#8b2323] rounded-3xl p-5 text-white text-center shadow-xl overflow-hidden"
+            className={`relative bg-gradient-to-br from-[#6b1a1a] to-[#8b2323] rounded-3xl p-5 text-white text-center shadow-xl overflow-hidden transition-all duration-500 ${
+              isBrideSide 
+                ? 'ring-4 ring-amber-400 scale-[1.03] shadow-amber-500/20' 
+                : hasSideFilter 
+                  ? 'opacity-60 grayscale-[10%]' 
+                  : ''
+            }`}
           >
+            {/* Guest side badge */}
+            {isBrideSide && (
+              <div className="absolute top-3 right-4 bg-amber-400 text-amber-950 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm animate-pulse">
+                Sự kiện dành cho bạn
+              </div>
+            )}
+
             {/* Heart icon on right */}
             <div className="absolute right-4 bottom-20 text-red-300 text-lg">❤️</div>
 

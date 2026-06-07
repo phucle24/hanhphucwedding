@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Bus } from 'lucide-react'
 import EnvelopeHero from './components/EnvelopeHero'
+import Invitation3DCard from './components/Invitation3DCard'
 import WeddingDetails from './components/WeddingDetails'
 import WeddingTimeline from './components/WeddingTimeline'
 import OurStory from './components/OurStory'
@@ -11,19 +12,63 @@ import CountdownSection from './components/Countdown'
 import ThankYouFooter from './components/ThankYouFooter'
 import FloatingPetals from './components/FloatingPetals'
 import MusicPlayer from './components/MusicPlayer'
+import LinkGenerator from './components/LinkGenerator'
 
 export default function App() {
+  const [currentPath, setCurrentPath] = useState(window.location.pathname)
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(window.location.pathname)
+    }
+    window.addEventListener('popstate', handleLocationChange)
+    return () => window.removeEventListener('popstate', handleLocationChange)
+  }, [])
+
+  // Check if accessing the generator dashboard
+  if (currentPath === '/danh-sach' || currentPath === '/admin') {
+    return <LinkGenerator />
+  }
+
+  // Parse URL query parameters for personalization
+  const searchParams = new URLSearchParams(window.location.search)
+  const guestName = searchParams.get('to') || searchParams.get('g') || ''
+  const side = searchParams.get('side') || '' // 'trai' or 'gai'
+
+  const [showCover, setShowCover] = useState(!!guestName)
+
+  // Block scroll on body when invitation card is presented (unopened)
+  useEffect(() => {
+    if (showCover) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [showCover])
+
   return (
     <>
+      <AnimatePresence>
+        {showCover && (
+          <EnvelopeHero 
+            guestName={guestName} 
+            onOpen={() => setShowCover(false)} 
+          />
+        )}
+      </AnimatePresence>
+
       <FloatingPetals count={20} />
       <main className="overflow-x-hidden">
-        <EnvelopeHero />
-        <WeddingDetails />
+        <Invitation3DCard />
+        <WeddingDetails side={side} />
         <CountdownSection />
         <WeddingTimeline />
         <OurStory />
         <Gallery />
-        <WishesSection />
+        <WishesSection guestName={guestName} />
         <ThankYouFooter />
       </main>
       <MusicPlayer />
@@ -46,3 +91,4 @@ export default function App() {
     </>
   )
 }
+
