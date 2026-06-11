@@ -140,6 +140,20 @@ export default function WishesSection({ guestName }) {
   const [showToast, setShowToast] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  // Helper to strip common Vietnamese greeting/invitation prefixes
+  const getCleanGuestName = (name) => {
+    if (!name) return ''
+    const lowerName = name.toLowerCase()
+    if (lowerName.startsWith('kính mời')) {
+      return name.substring(8).trim()
+    } else if (lowerName.startsWith('thân mời')) {
+      return name.substring(8).trim()
+    } else if (lowerName.startsWith('thân gửi')) {
+      return name.substring(8).trim()
+    }
+    return name
+  }
+
   // Fetch wishes from backend
   useEffect(() => {
     fetch('/api/wishes')
@@ -239,7 +253,7 @@ export default function WishesSection({ guestName }) {
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleSubmit}
           isLoading={isLoading}
-          defaultName={guestName}
+          defaultName={getCleanGuestName(guestName)}
         />
 
         {/* Success Toast */}

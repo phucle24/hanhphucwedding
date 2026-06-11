@@ -54,14 +54,14 @@ export const config = {
     },
   ],
 
-  // --- Gallery images (using Unsplash free images as placeholder) ---
+  // --- Gallery images (local uploaded photos) ---
   gallery: [
-    'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80',
-    // 'https://images.unsplash.com/photo-1606216794074-735e91aa2c92?w=600&q=80',
-    // 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80',
-    // 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&q=80',
-    // 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80',
-    // 'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=600&q=80',
+    '/album/main-image.jpg',
+    '/album/DSC_0305.jpg',
+    '/album/SEE00002.jpg',
+    '/album/SEE00839.jpg',
+    '/album/SEE09898.jpg',
+    '/album/SEE00851.jpg',
   ],
 
 }
