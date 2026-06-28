@@ -21,7 +21,7 @@ export default function ThankYouFooter() {
           >
             Trân Trọng Cảm Ơn
           </h3>
-          <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line max-w-sm mx-auto font-light">
+          <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line max-w-sm mx-auto font-normal">
             Chúng mình sắp bắt đầu một hành trình mới cùng nhau.
             Niềm vui này sẽ trọn vẹn hơn khi có bạn bên cạnh.
             Cuộc sống quý giá không chỉ ở đích đến, mà còn ở những khoảnh khắc chia sẻ cùng nhau.

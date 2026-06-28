@@ -78,7 +78,7 @@ export default function WeddingDetails({ side }) {
 
             <p className="text-xs text-white/80 mb-2">Nhằm ngày 20 tháng 6 năm Bính Ngọ</p>
 
-            <h4 className="text-lg font-serif tracking-wider mb-1">TẠI HỘI TRƯỜNG THÔN BÀ BẦU</h4>
+            <h4 className="text-lg font-serif tracking-wider mb-1">TẠI NHÀ VĂN HOÁ THÔN BÀ BẦU</h4>
             <p className="text-sm text-white/90 mb-4">Thôn Bà Bầu - Tam Xuân - Đà Nẵng</p>
 
             <button
