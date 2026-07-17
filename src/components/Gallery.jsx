@@ -105,16 +105,19 @@ export default function Gallery() {
     setSelectedImage(config.gallery[newIndex])
   }
 
-  const getGridClass = (index) => {
-    const classes = [
-      'col-span-2 row-span-2 aspect-[2/3] md:aspect-square', // 1 (Large)
-      'col-span-1 row-span-1 aspect-square',                 // 2
-      'col-span-1 row-span-1 aspect-square',                 // 3
-      'col-span-1 row-span-2 aspect-[3/4]',                  // 4 (Tall)
-      'col-span-1 row-span-2 aspect-[3/4]',                  // 4 (Tall)
-      'col-span-2 row-span-1 aspect-[2/1] md:aspect-[16/9]', // 5 (Wide)
-    ]
-    return classes[index % classes.length] || 'col-span-1 row-span-1 aspect-square'
+  const getGridClass = (index, imagePath) => {
+    const isLandscape = 
+      imagePath.includes('SEE00002') || 
+      imagePath.includes('SEE00297') || 
+      imagePath.includes('SEE00851')
+    
+    if (isLandscape) {
+      // Landscape (horizontal) images: span 2 columns on mobile, 1 on desktop
+      return 'col-span-2 md:col-span-1 aspect-[3/2]'
+    } else {
+      // Portrait (vertical) images: span 1 column, span 2 rows to fit their height
+      return 'col-span-1 row-span-2 aspect-[2/3] md:aspect-[3/4]'
+    }
   }
 
   return (
@@ -130,10 +133,10 @@ export default function Gallery() {
           <div className="w-16 h-0.5 bg-pink-300 mx-auto rounded-full mt-3 opacity-60" />
         </motion.div>
 
-        {/* Collage Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+        {/* Collage Grid with dense auto-placement */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 grid-flow-dense">
           {config.gallery.map((image, index) => {
-            const gridClass = getGridClass(index)
+            const gridClass = getGridClass(index, image)
             return (
               <motion.div
                 key={index}

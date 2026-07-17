@@ -72,6 +72,11 @@ export default function OurStory() {
               desc: 'Học cách yêu thương nhiều hơn, bao dung nhiều hơn và trân trọng từng khoảnh khắc có nhau. Mỗi chặng đường đi qua đều khiến cả hai thêm tin rằng: đây chính là người mình muốn cùng bước tiếp.'
             },
             {
+              year: 'Đầu năm 2026',
+              title: 'Cầu hôn',
+              desc: 'Ngày em đồng ý lời cầu hôn, đó là khoảnh khắc ngọt ngào nhất mở đầu cho hành trình chung đôi.'
+            },
+            {
               year: '2026',
               title: 'Dạm ngõ',
               desc: 'Khi tình yêu đã đủ chín, chúng mình cùng hai bên gia đình gửi gắm lời hứa cho một tương lai chung. Đó là khoảnh khắc hạnh phúc, ấm áp và đầy xúc động.'

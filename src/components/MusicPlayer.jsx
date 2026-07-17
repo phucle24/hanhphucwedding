@@ -51,7 +51,7 @@ export default function MusicPlayer() {
     // Attempt autoplay immediately in case browser allows it (e.g. relaxed policy)
     const autoPlayTimeout = setTimeout(() => {
       const searchParams = new URLSearchParams(window.location.search)
-      const hasGuest = searchParams.get('to') || searchParams.get('g')
+      const hasGuest = searchParams.get('g') || searchParams.get('to')
       if (!hasGuest) {
         startMusic()
       }

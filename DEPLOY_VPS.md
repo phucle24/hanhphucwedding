@@ -64,6 +64,38 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
+## Quy trình cập nhật (Update & Restart)
+
+Mỗi khi có thay đổi code mới (đã push lên GitHub), bạn cần chạy các lệnh sau trên VPS để cập nhật và khởi động lại trang web:
+
+### 1. SSH vào VPS
+```bash
+ssh root@your-vps-ip
+```
+
+### 2. Kéo code mới về và build lại
+```bash
+cd /var/www/wedding
+
+# Kéo code mới nhất từ GitHub
+git pull
+
+# Cài đặt package mới (nếu có)
+npm install
+
+# Build lại giao diện Frontend
+npm run build
+```
+
+### 3. Khởi động lại server bằng PM2
+```bash
+# Khởi động lại tiến trình pm2
+pm2 restart wedding
+
+# Xem log để kiểm tra trạng thái hoạt động
+pm2 logs wedding
+```
+
 ## Lưu ý
 - File `server/wishes.json` lưu toàn bộ lời chúc - backup thường xuyên
 - Nếu restart server, dữ liệu vẫn còn (lưu vào file)

@@ -3,6 +3,9 @@
 // ============================================================
 
 export const config = {
+  // --- Website URL ---
+  websiteUrl: 'https://www.hanhphucwedding.io.vn', // Địa chỉ website chính thức của thiệp cưới
+
   // --- Couple ---
   groomName: 'Lê Phúc',         // Tên chú rể
   brideName: 'Hạnh Hạnh',           // Tên cô dâu
@@ -62,6 +65,9 @@ export const config = {
     '/album/SEE00839.jpg',
     '/album/SEE09898.jpg',
     '/album/SEE00851.jpg',
+    '/album/SEE00297.jpg',
+    '/album/DSC_0198.jpg',
+    '/album/SEE09938.jpg',
   ],
 
 }

@@ -165,7 +165,7 @@ export default function WeddingTimeline() {
               day="02"
               month="08"
               year="2026"
-              lunarDate="Tức Ngày 19 tháng 6 năm Bính Ngọ"
+              lunarDate="Tức Ngày 20 tháng 6 năm Bính Ngọ"
               location="TẠI TƯ GIA NHÀ TRAI"
               delay={0.5}
             />

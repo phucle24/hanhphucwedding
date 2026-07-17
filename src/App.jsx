@@ -85,8 +85,9 @@ export default function App() {
 
   // Parse URL query parameters for personalization
   const searchParams = new URLSearchParams(window.location.search)
-  const guestName = searchParams.get('to') || searchParams.get('g') || ''
-  const side = searchParams.get('side') || '' // 'trai' or 'gai'
+  const guestName = searchParams.get('g') || searchParams.get('to') || ''
+  const rawSide = searchParams.get('s') || searchParams.get('side') || ''
+  const side = rawSide === 't' ? 'trai' : rawSide === 'g' ? 'gai' : rawSide // support 't', 'g', 'trai', 'gai'
 
   const [showCover, setShowCover] = useState(!!guestName)
   const [showConfetti, setShowConfetti] = useState(false)

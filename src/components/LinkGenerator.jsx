@@ -13,6 +13,7 @@ import {
   Check,
   AlertCircle
 } from 'lucide-react'
+import { config } from '../weddingConfig'
 
 export default function LinkGenerator() {
   const [guestText, setGuestText] = useState('')
@@ -89,16 +90,19 @@ export default function LinkGenerator() {
 
   // Generate individual link
   const getGuestLink = (guest) => {
-    const baseUrl = window.location.origin
+    const baseUrl = config.websiteUrl || window.location.origin
     const params = new URLSearchParams()
-    params.set('to', guest.name)
-    if (guest.side) {
-      params.set('side', guest.side)
+    params.set('g', guest.name)
+    if (guest.side === 'trai') {
+      params.set('s', 't')
+    } else if (guest.side === 'gai') {
+      params.set('s', 'g')
     }
     if (guest.relation) {
       params.set('r', guest.relation)
     }
-    return `${baseUrl}?${params.toString()}`
+    const urlString = `${baseUrl}?${params.toString()}`
+    return decodeURIComponent(urlString)
   }
 
   // Copy individual link
