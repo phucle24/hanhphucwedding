@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Copy, 
-  ExternalLink, 
+import {
+  Copy,
+  ExternalLink,
   Trash2, 
   Search, 
   Share2, 
@@ -14,6 +14,7 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { config } from '../weddingConfig'
+import { buildReadableQueryString } from '../utils/invitationUrl'
 
 export default function LinkGenerator() {
   const [guestText, setGuestText] = useState('')
@@ -91,34 +92,15 @@ export default function LinkGenerator() {
   // Generate individual link
   const getGuestLink = (guest) => {
     const baseUrl = config.websiteUrl || window.location.origin
-    const params = new URLSearchParams()
-    params.set('g', guest.name)
-    if (guest.side === 'trai') {
-      params.set('s', 't')
-    } else if (guest.side === 'gai') {
-      params.set('s', 'g')
-    }
-    if (guest.relation) {
-      params.set('r', guest.relation)
-    }
-    let queryStr = params.toString()
-    // Temporarily replace %2B, %26, %3D, %23 so they don't get decoded to raw '+', '&', '=', '#'
-    queryStr = queryStr
-      .replace(/%2B/gi, '__PLUS__')
-      .replace(/%26/gi, '__AMP__')
-      .replace(/%3D/gi, '__EQUALS__')
-      .replace(/%23/gi, '__HASH__')
+    const sideParam = guest.side === 'trai' ? 't' : guest.side === 'gai' ? 'g' : ''
+    const queryStr = buildReadableQueryString({
+      g: guest.name,
+      s: sideParam,
+      r: guest.relation
+    })
 
-    let decodedQuery = decodeURIComponent(queryStr)
-
-    // Restore the encoded representation so they remain valid URL-safe characters
-    decodedQuery = decodedQuery
-      .replace(/__PLUS__/g, '%2B')
-      .replace(/__AMP__/g, '%26')
-      .replace(/__EQUALS__/g, '%3D')
-      .replace(/__HASH__/g, '%23')
-
-    return `${baseUrl}?${decodedQuery}`
+    const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
+    return `${cleanBaseUrl}?${queryStr}`
   }
 
   // Copy individual link
