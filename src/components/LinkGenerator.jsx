@@ -101,8 +101,24 @@ export default function LinkGenerator() {
     if (guest.relation) {
       params.set('r', guest.relation)
     }
-    const urlString = `${baseUrl}?${params.toString()}`
-    return decodeURIComponent(urlString)
+    let queryStr = params.toString()
+    // Temporarily replace %2B, %26, %3D, %23 so they don't get decoded to raw '+', '&', '=', '#'
+    queryStr = queryStr
+      .replace(/%2B/gi, '__PLUS__')
+      .replace(/%26/gi, '__AMP__')
+      .replace(/%3D/gi, '__EQUALS__')
+      .replace(/%23/gi, '__HASH__')
+
+    let decodedQuery = decodeURIComponent(queryStr)
+
+    // Restore the encoded representation so they remain valid URL-safe characters
+    decodedQuery = decodedQuery
+      .replace(/__PLUS__/g, '%2B')
+      .replace(/__AMP__/g, '%26')
+      .replace(/__EQUALS__/g, '%3D')
+      .replace(/__HASH__/g, '%23')
+
+    return `${baseUrl}?${decodedQuery}`
   }
 
   // Copy individual link
