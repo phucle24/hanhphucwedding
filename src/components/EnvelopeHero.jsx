@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { config } from '../weddingConfig'
+import { getInvitationParam } from '../utils/invitationUrl'
 
 export default function EnvelopeHero({ guestName, onOpen }) {
   const handleOpen = useCallback(() => {
@@ -15,7 +16,7 @@ export default function EnvelopeHero({ guestName, onOpen }) {
 
   // Relationship pronoun detection helper
   const searchParams = new URLSearchParams(window.location.search)
-  const urlRelation = searchParams.get('r')
+  const urlRelation = getInvitationParam(searchParams, 'r')
 
   const getPronoun = (name, override) => {
     if (override) return override.trim()

@@ -13,6 +13,7 @@ import ThankYouFooter from './components/ThankYouFooter'
 import FloatingPetals from './components/FloatingPetals'
 import MusicPlayer from './components/MusicPlayer'
 import LinkGenerator from './components/LinkGenerator'
+import { getInvitationParam } from './utils/invitationUrl'
 
 function FlowerConfetti() {
   const [petals, setPetals] = useState([])
@@ -85,8 +86,8 @@ export default function App() {
 
   // Parse URL query parameters for personalization
   const searchParams = new URLSearchParams(window.location.search)
-  const guestName = searchParams.get('g') || searchParams.get('to') || ''
-  const rawSide = searchParams.get('s') || searchParams.get('side') || ''
+  const guestName = getInvitationParam(searchParams, 'g', 'to')
+  const rawSide = getInvitationParam(searchParams, 's', 'side')
   const side = rawSide === 't' ? 'trai' : rawSide === 'g' ? 'gai' : rawSide // support 't', 'g', 'trai', 'gai'
 
   const [showCover, setShowCover] = useState(!!guestName)
@@ -268,4 +269,3 @@ export default function App() {
     </>
   )
 }
-

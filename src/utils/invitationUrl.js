@@ -24,3 +24,28 @@ export const buildReadableQueryString = (params) =>
       return `${encodedKey}=${encodeReadableQueryValue(value)}`
     })
     .join('&')
+
+export const normalizeInvitationParamValue = (value) => {
+  if (!value) return ''
+
+  let normalizedValue = value
+
+  for (let index = 0; index < 2; index += 1) {
+    if (!/%[0-9A-Fa-f]{2}/.test(normalizedValue)) break
+
+    try {
+      const decodedValue = decodeURIComponent(normalizedValue)
+      if (decodedValue === normalizedValue) break
+      normalizedValue = decodedValue
+    } catch {
+      break
+    }
+  }
+
+  return normalizedValue.normalize('NFC')
+}
+
+export const getInvitationParam = (searchParams, ...keys) => {
+  const value = keys.map((key) => searchParams.get(key)).find(Boolean)
+  return normalizeInvitationParamValue(value)
+}

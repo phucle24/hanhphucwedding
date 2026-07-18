@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Music, Music2 } from 'lucide-react'
+import { getInvitationParam } from '../utils/invitationUrl'
 
 export default function MusicPlayer() {
   const [playing, setPlaying] = useState(false)
@@ -51,7 +52,7 @@ export default function MusicPlayer() {
     // Attempt autoplay immediately in case browser allows it (e.g. relaxed policy)
     const autoPlayTimeout = setTimeout(() => {
       const searchParams = new URLSearchParams(window.location.search)
-      const hasGuest = searchParams.get('g') || searchParams.get('to')
+      const hasGuest = getInvitationParam(searchParams, 'g', 'to')
       if (!hasGuest) {
         startMusic()
       }
