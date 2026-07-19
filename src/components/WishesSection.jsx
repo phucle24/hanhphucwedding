@@ -139,6 +139,8 @@ export default function WishesSection({ guestName }) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const wishScrollDuration = Math.max(140, wishes.length * 20)
+  const wishScrollDelay = 1.4
 
   // Helper to strip common Vietnamese greeting/invitation prefixes
   const getCleanGuestName = (name) => {
@@ -207,16 +209,25 @@ export default function WishesSection({ guestName }) {
         {/* Scrolling wishes container */}
         <div className="relative h-[400px] overflow-hidden mb-20">
           <motion.div
-            className="absolute w-full"
-            initial={{ y: '100%' }}
-            animate={{ y: '-100%' }}
+            className="absolute w-full transform-gpu"
+            initial={{ opacity: 0, y: '16%' }}
+            animate={{ opacity: 1, y: '-100%' }}
             transition={{
-              duration: 60,
-              repeat: Infinity,
-              ease: 'linear',
+              opacity: {
+                duration: 0.8,
+                delay: wishScrollDelay,
+                ease: 'easeOut',
+              },
+              y: {
+                duration: wishScrollDuration,
+                delay: wishScrollDelay,
+                repeat: Infinity,
+                ease: 'linear',
+              },
             }}
+            style={{ willChange: 'transform' }}
           >
-            {/* Hiển thị danh sách lời chúc gốc, không nhân đôi để có khoảng nghỉ */}
+            {/* Chậm một nhịp rồi lời chúc mới cuộn lên nhẹ và mượt */}
             {wishes.map((wish, idx) => (
               <div
                 key={`${wish.id}-${idx}`}
